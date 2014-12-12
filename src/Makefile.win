@@ -1,0 +1,61 @@
+COQFLAGS=-coqlib "$(COQLIB)"
+COQDOCFLAGS=-coqlib_path "$(COQLIB)" --latex -g
+COQC="$(COQBIN)"/coqc $(COQFLAGS)
+COQDOC="$(COQBIN)"/coqdoc $(COQDOCFLAGS)
+
+
+.SUFFIXES: .v .vo .tex
+
+.v.vo:
+	$(COQC) $*
+.v.tex:
+	$(COQDOC) $*.v
+
+
+Categories.vo: Categories.v
+PredomCore.vo: Categories.vo PredomCore.v
+NSetoid.vo: Categories.vo NSetoid.v
+PredomSum.vo: PredomSum.v PredomCore.vo
+PredomLift.vo: PredomLift.v PredomCore.vo
+PredomKleisli.vo: PredomKleisli.v PredomLift.vo PredomCore.vo 
+PredomFix.vo: PredomFix.v PredomCore.vo PredomLift.vo PredomKleisli.vo
+KnasterTarski.vo: KnasterTarski.v PredomCore.vo 
+PredomAll.vo: PredomAll.v PredomCore.vo PredomSum.vo PredomLift.vo PredomKleisli.vo PredomFix.vo 
+PredomRec.vo: PredomRec.v Categories.vo PredomCore.vo NSetoid.vo
+
+typedlambda.vo: typedlambda.v 
+typedopsem.vo: typedopsem.v typedlambda.vo
+typeddensem.vo: typeddensem.v PredomAll.vo typedlambda.vo
+typedsubst.vo: typedsubst.v typeddensem.vo
+typedsoundness.vo: typedsoundness.v typedsubst.vo typedopsem.vo
+typedadequacy.vo: typedadequacy.v typeddensem.vo typedopsem.vo
+
+unii.vo: unii.v Fin.vo
+uniirec.vo: PredomAll.vo PredomRec.vo
+uniisem.vo: uniisem.v PredomAll.vo unii.vo uniirec.vo Fin.vo
+uniiop.vo: uniiop.v unii.vo
+uniisound.vo: uniisound.v uniisem.vo uniiop.vo Fin.vo
+uniiade.vo: uniiade.v uniisem.vo uniiop.vo KnasterTarski.vo Fin.vo
+
+
+MetricCore.vo: MetricCore.v NSetoid.vo Categories.vo
+Finmap.vo: Finmap.v NSetoid.vo MetricCore.vo
+msyntax.vo: msyntax.v Finmap.vo
+moperational.vo: moperational.v msyntax.vo Finmap.vo
+msem.vo: msem.v mpremet.vo msyntax.vo moperational.vo
+mpremet.vo: mpremet.v PredomCore.vo MetricCore.vo Finmap.vo MetricRec.vo FinmapMetric.vo
+FinmapMetric.vo: FinmapMetric.v NSetoid.vo MetricCore.vo FinMap.vo
+MetricRec.vo: MetricRec.v Categories.vo MetricCore.vo NSetoid.vo
+
+Fin.vo: Fin.v
+KSTy.vo: KSTy.v Fin.vo
+KSTm.vo: KSTm.v Fin.vo
+KSTyping.vo: KSTyping.v KSTy.vo KSTm.vo Fin.vo
+KSOp.vo: KSOp.v KSTm.vo Fin.vo FinMap.vo
+KSSem.vo: KSSem.v Fin.vo KSTm.vo KSTy.vo KSTyping.vo KSOp.vo MetricRec.vo mpremet.vo
+
+all: typedadequacy.vo typedsoundness.vo uniisound.vo uniiade.vo KSSem.vo
+
+
+
+

@@ -1,0 +1,1 @@
+coqdoc --coqlib_path "%COQLIB%" --latex -g -p "\usepackage{stmaryrd} \input{../conf/macros}" Predom.v PredomAux.v lc.v typedlambda.v typedopsem.v typeddensem.v typedsubst.v typedsoundness.v typedadequacy.v Sets.v KnasterTarski.v uni.v unisem.v unisound.v uniade.v 

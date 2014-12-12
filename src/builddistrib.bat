@@ -1,0 +1,1 @@
+tar cf tphols09.tar Makefile utility.v PredomCore.v PredomProd.v PredomSum.v PredomLift.v PredomKleisli.v PredomFix.v PredomAll.v lc.v KnasterTarski.v Sets.v uni.v unisem.v uniade.v unisound.v typeddensem.v typedsubst.v typedlambda.v typedopsem.v typedsoundness.v typedadequacy.v
