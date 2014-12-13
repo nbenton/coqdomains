@@ -817,7 +817,8 @@ assert (lub c =-= Val f') as lubval'.
 apply: Ole_antisym.
 eapply Ole_trans. apply lubval1. by apply: DLle_leVal.
 simpl.
-apply: (DLleVal). apply lubval. apply Ole_refl.
+(* apply: DLleVal works here in 8.4pl2 but not in pl5, so changed to eapply *)
+eapply (DLleVal). apply lubval. apply Ole_refl.
 assert (f' <= d).
 destruct lubval' as [v1 v2].
 assert (Val f' <= Val d).
